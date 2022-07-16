@@ -1,3 +1,5 @@
+from deck import Deck
+
 
 class Player():
     
@@ -35,30 +37,32 @@ class Player():
         #maybe add a print(you lost bet)
 
     def display(self):
-        #shows all valid info about the player Name, Current; Hand, Balance, Bet, value
-        pass
+        print(f"{self.name}")
+        print(f"Balance: {self.bal}")
+        print(f"Current Bet: {self.bet_amount}")
+        print("Hand:")
+        for card in self.hand:
+            print(card['value'], 'of', card['suit'])
+        print("Hand Value: " + self.hand_v)
+        
 
-    def display_cards(self):
-        #revealse all cards in hand
-        #when called prints each card in hand, (could spice it up with a card API and ASCII art)      
-        pass
+    
 
 
-    def hit(self):
-        #Will call get card
-        #Will append that card to hand
-        #Adds card value to hand value
-        pass
+    def hit(self, card_dictionary):
+        self.hand.append(card_dictionary)
+        self.hand_v += card_dictionary['points']
+        
 
     def bust(self, hand_value):
-        #if hand_value > 21 Retuns True
-        #else Returns False
-        pass
+        if self.hand_v > 21:
+             return True
+        else:
+            return False
 
 
 
 class Dealer():
-    pass
     def __init__(self, name):
         self.name = ''
         self.hand = []
@@ -67,35 +71,46 @@ class Dealer():
 
 
 
-    def hit(self):
-        #Will call get card
-        #Will append that card to hand
-        #Adds card value to hand value
-        pass
+    def hit(self, card_dictionary):
+        self.hand.append(card_dictionary)
+        if len(self.hand) < 2 or len(self.hand) > 2:
+            self.hidden_value += card_dictionary['points']
+        self.true_value += card_dictionary['points']
+        
 
     def dealer_display(self):
-        #display all the dealers name and cards except the second
-        pass
+        print("Dealer's Hand:")
+        for i in range(len(self.hand)):
+            if i == 2:
+                print("Unknown", end='')
+            else:
+                print(self.hand[i]['value'], 'of', self.hand[i]['suit'])
+        print("Shown Hand Value: " + self.hidden_value)
+
+       
 
     def bust(self):
-        #if hand_value > 21 Retuns True
-        #else Returns False
-        pass
+        if self.true_value > 21:
+             return True
+        else:
+            return False
+        
 
-    def shown_hand_value(self):
-        #Returns an int for all cards except the first
-        pass
-
-    def true_hand_value(self):
-        #Returns an int for all cards
-        pass
 
     def true_display(self):
-        #When called shows the dealers cards including the second card
-        pass
+        print("Dealer's Hand:")
+        for card in self.hand:
+            print(card['value'], 'of', card['suit'])
+        print("Hand Value: " + self.true_value)
+        
+       
 
 
 class Table():
+    game_deck = Deck()
+
+    while game_deck.cards_left < 52:
+        game_deck.shuffle()
 
     def __init__(self):
         self.dealer = None
@@ -115,7 +130,11 @@ class Table():
         #Shows the dealers second card after its "flipped over" and show his hands_true_value
 
 
-    def main(self):    
+    def main(self): 
+        game_deck = Deck()
+
+        while game_deck.cards_left < 52:
+            game_deck.shuffle()   
         #Welcome
         #whose the_dealer
         #whose the_player

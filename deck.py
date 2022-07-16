@@ -6,7 +6,7 @@ class Deck():
     deck_id = 'z0m0j5le7c56'
     response = requests.post(url)
     deck = response.json()
-    cards_left = deck['remaining']
+    cards_left = int(deck['remaining'])
     cards = deck 
 
     def get_card(self):
@@ -32,13 +32,12 @@ class Deck():
         reshuffle = requests.post(data)
         return reshuffle.json()
 
+   
 
-game_deck = Deck()
 
-game_deck.shuffle()
 
-print(game_deck.deck)
-print(game_deck.get_card())
+
+
 
 
 
