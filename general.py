@@ -1,22 +1,4 @@
 
-
-class Deck():
-    cards = [] #Can be a straight up list 2C, 3C, 4C.... or list of dicts {'card': 2c, 'value': 2} [ { 2c: 2}]
-    used_cards = []
-
-    def get_value(self, card): #If we go straight up list, will need this function to find value
-        pass
-        #Takes in a card and returns a value 
-
-    def get_card(self):
-        pass
-        #Gets random card from card list
-        #removes that card from card list
-        #appends that card to used_cards list
-        #Passes that card to get_value
-        #Returns dict with card and it's card value
-
-
 class Player():
     
     def __init__(self, name):
