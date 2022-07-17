@@ -4,6 +4,7 @@ from time import sleep
 from pyfiglet import Figlet
 import ascii_magic
 import os
+import colorizer
 
 
 class Player():
@@ -23,21 +24,26 @@ class Player():
         betting = True
         while betting:
             if self.bal > 0:
-                bet = int(input(f'{self.name} you have ${self.bal}. How much would you like to bet? '))
-                if bet <= self.bal:
-                    
-                    self.bal=(self.bal - bet)
-                    self.pot=(self.bet_amount*2)
-                    self.bet_amount = bet
-                    return True
+                bet = input(f'{self.name} you have ${self.bal}. How much would you like to bet? ')
+                if not bet.isdigit():
+                    colorizer.print_red("Invalid entry please try again.")
+                    print()
                 else:
-                    print('You don\'t have enough money to place this bet')
-                    more_chips=input('Would you like to buy more chips? Y/N?').lower().strip()
-                    if more_chips == 'y':
-                        self.bal=(self.bal + 1000)
-
+                    bet = int(bet)
+                    if bet <= self.bal:
+                        
+                        self.bal=(self.bal - bet)
+                        self.pot=(self.bet_amount*2)
+                        self.bet_amount = bet
+                        return True
                     else:
-                        print(f'Please adjust your bet amount to continue playing')
+                        print('You don\'t have enough money to place this bet')
+                        more_chips=input('Would you like to buy more chips? Y/N?').lower().strip()
+                        if more_chips == 'y':
+                            self.bal=(self.bal + 1000)
+
+                        else:
+                            print(f'Please adjust your bet amount to continue playing')
             else:
                 print('You don\'t have enough money to contiue')
                 more_chips=input('Would you like to buy more chips? Y/N?').lower().strip()
@@ -69,29 +75,29 @@ class Player():
         print(f"Balance: {self.bal}")
         print(f"Current Bet: {self.bet_amount}")
         print("\nHand:")
-        print("------------------")
+        print("------------------\n\n")
         for card in self.hand:
-            # print(card['value'], 'of', card['suit'])
-            
-            card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 10)
-            ace = ascii_magic.to_terminal(card_pic)
+            print(f"{card['value'].title()} of", end = "", sep='')
+            if card['suit'] == 'DIAMONDS':
+                colorizer.print_diamonds()
+            elif card['suit'] == 'HEARTS':
+                colorizer.print_hearts()
+            elif card['suit'] == 'CLUBS':
+                colorizer.print_clubs()
+            else:
+                colorizer.print_spades()
 
 
-
-
-        print("\nHand Value: ", self.hand_v)
+            # card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 15)
+            # ace = ascii_magic.to_terminal(card_pic)
+        print("\n\nHand Value: ", self.hand_v)
 
     def hit(self, card_dictionary):
         self.hand.append(card_dictionary)
         self.hand_v += card_dictionary['points']
         if card_dictionary['value'] == 'ACE':
             self.aces.append('ace')
-            
-        
-
-
-        
-        
+             
     def bust(self):
         if self.hand_v > 21:
             if self.aces:
@@ -135,9 +141,10 @@ class Dealer():
         """)
         for i in range(len(self.hand)):
             if i == 1:
-                print("Unknown")
+                print("Unknown", end = '   ')
             else:
-                print(self.hand[i]['value'], 'of', self.hand[i]['suit'])
+                print(f"{self.hand[i]['value']} of {self.hand[i]['suit']}", end = '   ')
+        print("\n\n")
         print("Shown Hand Value: ", self.hidden_value)
 
        
@@ -153,9 +160,6 @@ class Dealer():
         else:
             return False
 
-        
-
-
     def true_display(self):
         print(f"""
         ~~~~~~~~~~~~~~~~~~~~~
@@ -163,7 +167,8 @@ class Dealer():
         ~~~~~~~~~~~~~~~~~~~~~
         """)
         for card in self.hand:
-            print(card['value'], 'of', card['suit'])
+            print(f"{card['value']} of {card['suit']}", end = '   ' )
+        print("\n\n")
         print("Hand Value: ", self.true_value)
 
     def clear_hand(self):
@@ -172,7 +177,6 @@ class Dealer():
         self.hand = []
         
     
-
 class Table():
     game_deck = Deck()
     while game_deck.cards_left < 52:
@@ -224,7 +228,8 @@ class Table():
             if not self.player1.bet():
                 break
             else:
-                print("Initial draw!")
+                os.system('cls' if os.name == 'nt' else '')
+                print("\n\n\n\n\n\n\t\t\tInitial draw!")
                 sleep(2)
                 self.player1.hit(game_deck.get_card())
                 self.display_all_hidden()
