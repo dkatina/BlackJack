@@ -1,5 +1,9 @@
-from copyreg import dispatch_table
+
 from deck import Deck
+from time import sleep
+from pyfiglet import Figlet
+import ascii_magic
+import os
 
 #If Hand > 21 and ace in hand ace = 1
 
@@ -9,12 +13,13 @@ from deck import Deck
 class Player():
     
     def __init__(self, name):
-        self.name = name
+        self.name = name.title()
         self.bal = 0
         self.hand = []
         self.bet_amount = 0
         self.hand_v = 0
         self.aces = []
+            
     def get_bal(self):
         return self.bal
     
@@ -22,7 +27,7 @@ class Player():
         betting = True
         while betting:
             if self.bal > 0:
-                bet = int(input(f'You have ${self.bal}. How much would you like to bet? '))
+                bet = int(input(f'{self.name} you have ${self.bal}. How much would you like to bet? '))
                 if bet <= self.bal:
                     
                     self.bal=(self.bal - bet)
@@ -60,13 +65,20 @@ class Player():
         
 
     def display(self):
-        print(f"{self.name}")
+        print(f"""
+        ~~~~~~~~~~~~~~~~~~~~~
+              {self.name}
+        ~~~~~~~~~~~~~~~~~~~~~
+        """)
         print(f"Balance: {self.bal}")
         print(f"Current Bet: {self.bet_amount}")
-        print("Hand:")
+        print("\nHand:")
+        print("------------------")
         for card in self.hand:
             print(card['value'], 'of', card['suit'])
-        print("Hand Value: ", self.hand_v)
+            # card_pic = ascii_magic.from_url(card['image'])
+            # ascii_magic.to_terminal(card_pic)
+        print("\nHand Value: ", self.hand_v)
 
     def hit(self, card_dictionary):
         self.hand.append(card_dictionary)
@@ -111,11 +123,16 @@ class Dealer():
         if len(self.hand) < 2 or len(self.hand) > 2:
             self.hidden_value += card_dictionary['points']
         self.true_value += card_dictionary['points']
-        self.aces.append(card_dictionary['value'])
+        if card_dictionary['value'] == 'ACE':
+            self.aces.append('ace')
         
 
     def dealer_display(self):
-        print("Dealer's Hand:")
+        print(f"""
+        ~~~~~~~~~~~~~~~~~~~~~
+            Dealer's Hand:
+        ~~~~~~~~~~~~~~~~~~~~~
+        """)
         for i in range(len(self.hand)):
             if i == 1:
                 print("Unknown")
@@ -168,20 +185,25 @@ class Table():
         pass
 
     def display_all_hidden(self):
+        os.system('cls' if os.name == 'nt' else '')
         {self.dealer.dealer_display()}
         print('\n\n')
         {self.player1.display()}   
         print('\n')
+        sleep(1)
 
     def display_all_true(self):
+        os.system('cls' if os.name == 'nt' else '')
         {self.dealer.true_display()}
         print('\n\n')
         {self.player1.display()}   
         print('\n')
+        sleep(1)
 
 
 
     def main(self): 
+        os.system('cls' if os.name == 'nt' else '')
         game_deck = Deck()
 
         if game_deck.cards_left < 52:
@@ -192,7 +214,7 @@ class Table():
         self.dealer = Dealer(the_dealer)
         self.player1 = Player(the_player)
 
-        bal = int(input("How much will you be playing with?: "))
+        bal = int(input(f"How much will you be playing with {self.player1.name}?: "))
         self.player1.bal = bal 
 
         
@@ -201,6 +223,8 @@ class Table():
             if not self.player1.bet():
                 break
             else:
+                print("Initial draw!")
+                sleep(2)
                 self.player1.hit(game_deck.get_card())
                 self.display_all_hidden()
                 self.dealer.hit(game_deck.get_card())
@@ -221,6 +245,7 @@ class Table():
                     self.display_all_hidden()
                 else:
                     self.player1.hit(game_deck.get_card())
+                    self.player1.bust()
                     self.display_all_hidden()
                     if self.player1.bust():
                         print("BUST!")
@@ -228,18 +253,20 @@ class Table():
                         self.player1.lose_hand()
                         hitting = False
                         player_busts = True
+                    
 
             if not player_busts:
                 self.display_all_true()
                 while self.dealer.true_value < 17:
                     self.dealer.hit(game_deck.get_card())
+                    self.dealer.bust()
                     self.display_all_true()
                 
             if self.dealer.bust():
-                print("You win!")
+                print("Dealer Busted!\n You Win!")
                 self.player1.win_hand()
             
-            else:
+            elif not player_busts:
                 if self.player1.hand_v > self.dealer.true_value:
                     print("You win!")
                     self.player1.win_hand()
@@ -257,6 +284,7 @@ class Table():
             self.player1.clear_hand()
 
             again = input("Would you like to play again: (Y/N) ").lower()
+            os.system('cls' if os.name == 'nt' else '')
             if not again == 'y':
                 playing = False
 

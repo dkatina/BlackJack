@@ -15,7 +15,7 @@ class Deck():
         revised_card = {
             'value': card['cards'][0]['value'],
             'suit': card['cards'][0]['suit'],
-            'image': card['cards'][0]['image']
+            'image': card['cards'][0]['images']['svg']
         }
         if revised_card['value'].isdigit():
             revised_card['points'] = int(revised_card['value'])
