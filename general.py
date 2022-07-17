@@ -74,7 +74,7 @@ class Player():
             # print(card['value'], 'of', card['suit'])
             
             card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 10)
-            ascii_magic.to_terminal(card_pic)
+            ace = ascii_magic.to_terminal(card_pic)
 
 
 
