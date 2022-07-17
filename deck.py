@@ -20,8 +20,7 @@ class Deck():
         if revised_card['value'].isdigit():
             revised_card['points'] = int(revised_card['value'])
         elif revised_card['value'] == 'ACE':
-            revised_card['point1'] = 1
-            revised_card['point2'] = 11
+            revised_card['points'] = 11
         else:
             revised_card['points'] = 10
         return revised_card
