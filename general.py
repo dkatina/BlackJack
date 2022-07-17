@@ -1,11 +1,29 @@
+#     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#     *    BLACK<(21)>JACK      *
+#     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#     *  Created and perfected  *
+#     *           By            *
+#     *    Dylan K. & Jody S.   *
+#     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# ~~~~~~ SYSTEM IMPORTS ~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#*--> Deck import for deckofcardsapi.com to utilize 6 decks of cards at play
 from deck import Deck
+#*--> Time/Sleep imported for game timing to similate real game play
 from time import sleep
+#*--> Pyfiglet imported  ASCII text and renders it in ASCII art fonts
 from pyfiglet import Figlet
+#*--> Python package that converts images into ASCII art for terminals
 import ascii_magic
+#*--> OS for clear screen functions across platforms
 import os
 
 
+# ~~~~~~ PROGRAM EXECUTION ~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#*--> Player actions including wager calculations,
+#*--> drawing cards "Hit", win/lose/bust displays.
 class Player():
     
     def __init__(self, name):
@@ -48,18 +66,21 @@ class Player():
                     print(f'Thank you for playing, we look forward to nextime you wanna give us your money.')
                     return False
 
+#*--> DISPLAY WAGER LOSS AMT ~~~~~~~~~~
     def lose_hand(self):
         print(f'You lost $', self.bet_amount)
         self.bet_amount = 0
-        
+
+#*--> ADJUSTS PLAYERS BALANCE DUE TO TIE HAND ~~~~~~~~~~         
     def draw(self):
         self.bal += (self.bet_amount)
         self.bet_amount = 0
 
+#*--> ADJUSTS PLAYER BALANCE = PLAYER WAGER+DEALER WAGER ~~~~~~~~~~
     def win_hand(self):
         self.bal += (self.bet_amount *2)
         
-
+#*--> DISPLAYS NAME, CARDS, & STATS OF PLAYER ~~~~~~~~~~        
     def display(self):
         print(f"""
         ~~~~~~~~~~~~~~~~~~~~~
@@ -76,22 +97,21 @@ class Player():
             card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 10)
             ace = ascii_magic.to_terminal(card_pic)
 
-
-
-
         print("\nHand Value: ", self.hand_v)
 
+
+#*--> DRAWS CARD ON REQUEST OF "HIT" INPUT ~~~~~~~~~~~
+#*--> CHECKS IF ACE IN HAND FOR 1/11 VALUE HANDLING ~~
     def hit(self, card_dictionary):
         self.hand.append(card_dictionary)
         self.hand_v += card_dictionary['points']
+
         if card_dictionary['value'] == 'ACE':
             self.aces.append('ace')
-            
-        
-
 
         
-        
+#*--> "BUST" ACTIONS WHEN 21 IS EXCEEDED ~~~~~~~~~~~
+#*--> VERIFY/ADJUST VALUE OF ACE TO 1 ~~~~~~~~~~~~~~~        
     def bust(self):
         if self.hand_v > 21:
             if self.aces:
@@ -103,12 +123,14 @@ class Player():
         else:
             return False
 
+#*--> RESETS CARDS FOR NEW GAME PLAY ~~~~~~~~~~~
     def clear_hand(self):
         self.hand_v = 0
         self.hand = []
 
 
-
+#*--> Dealer actions during play
+#*--> drawing cards "Hit", win/lose/bust displays.
 class Dealer():
     def __init__(self):
         self.hand = []
@@ -116,8 +138,8 @@ class Dealer():
         self.true_value = 0
         self.aces = []
 
-
-
+#*--> DRAWS CARD ON REQUEST OF "HIT" INPUT ~~~~~~~~~~~
+#*--> CHECKS IF ACE IN HAND FOR 1/11 VALUE HANDLING ~~
     def hit(self, card_dictionary):
         self.hand.append(card_dictionary)
         if len(self.hand) < 2 or len(self.hand) > 2:
@@ -126,7 +148,7 @@ class Dealer():
         if card_dictionary['value'] == 'ACE':
             self.aces.append('ace')
         
-
+#*--> DISPLAYS NAME, CARDS, & STATS OF DEALER ~~~~~~~~~~
     def dealer_display(self):
         print(f"""
         ~~~~~~~~~~~~~~~~~~~~~
@@ -141,7 +163,8 @@ class Dealer():
         print("Shown Hand Value: ", self.hidden_value)
 
        
-
+#*--> "BUST" ACTIONS WHEN 21 IS EXCEEDED ~~~~~~~~~~~
+#*--> VERIFY/ADJUST VALUE OF ACE TO 1 ~~~~~~~~~~~~~~~
     def bust(self):
         if self.true_value > 21:
             if self.aces:
@@ -153,9 +176,8 @@ class Dealer():
         else:
             return False
 
-        
 
-
+#*--> AFTER PLAYER CHOOSES "STAY" DEALER HOLE CARD IS REVEALED ~~
     def true_display(self):
         print(f"""
         ~~~~~~~~~~~~~~~~~~~~~
@@ -166,13 +188,15 @@ class Dealer():
             print(card['value'], 'of', card['suit'])
         print("Hand Value: ", self.true_value)
 
+#*--> RESETS CARDS FOR NEW GAME PLAY ~~~~~~~~~~~
     def clear_hand(self):
         self.hidden_value = 0
         self.true_value = 0
         self.hand = []
         
     
-
+#*--> Table actions including card shuffling,  
+#*--> holds functions of how/when cards displayed during play.
 class Table():
     game_deck = Deck()
     while game_deck.cards_left < 52:
@@ -186,6 +210,7 @@ class Table():
     def welcome(self):
         pass
 
+#*--> FIRST CARD DISPLAY WITH DEALER HOLE CARD VALUE HIDDEN ~~~~~~~~~
     def display_all_hidden(self):
         os.system('cls' if os.name == 'nt' else '')
         {self.dealer.dealer_display()}
@@ -194,6 +219,7 @@ class Table():
         print('\n')
         sleep(1)
 
+#*--> CARD DISPLAY WITH DEALER HOLE CARD VALUE REVEALED ~~~~~~~~~~~
     def display_all_true(self):
         os.system('cls' if os.name == 'nt' else '')
         {self.dealer.true_display()}
@@ -203,7 +229,9 @@ class Table():
         sleep(1)
 
 
-
+#*--> WELCOME INPUT PROMPT - PLAYER NAME, ~~~ 
+#*--> BEGINING BALANCE AMOUNT FOR PLAY  ~~~~~
+#*--> BEGINS GAME PLAY LOGIC ~~~~~~~~~~~~~~~~
     def main(self): 
         os.system('cls' if os.name == 'nt' else '')
         game_deck = Deck()
@@ -281,17 +309,13 @@ class Table():
                     self.player1.lose_hand()
                     
 
+#*-->  WIN OR LOSE THE PLAYER IS GIVEN OPTION TO PLAY AGAIN OR NOT ~~~~~~~~~
             self.dealer.clear_hand()
             self.player1.clear_hand()
-
             again = input("Would you like to play again: (Y/N) ").lower()
             os.system('cls' if os.name == 'nt' else '')
             if not again == 'y':
                 playing = False
-
-
-                
-
 
 
 if __name__ == '__main__':
