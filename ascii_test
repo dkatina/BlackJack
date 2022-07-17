@@ -1,0 +1,28 @@
+import ascii_magic
+
+cards = [
+    {'image': 'AD'},
+    {'image': 'AC'},
+    {'image': 'AS'}
+]
+
+
+
+card_pic = ascii_magic.from_image_file(f"images/{cards[0]['image']}.png", columns = 20)
+ace = ascii_magic.to_terminal(card_pic)
+
+card_pic = ascii_magic.from_image_file(f"images/{cards[1]['image']}.png", columns = 20)
+ace2 = ascii_magic.to_terminal(card_pic)
+
+card_pic = ascii_magic.from_image_file(f"images/{cards[2]['image']}.png", columns = 20)
+ace3 = ascii_magic.to_terminal(card_pic)
+
+
+
+
+
+spacing = ' ' * 5  # Between cards.
+card_pics = [ace, ace2, ace3]
+
+for pieces in zip(*(card.splitlines() for card in card_pics)):
+    print(spacing.join(pieces))

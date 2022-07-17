@@ -33,6 +33,8 @@ class Deck():
         return reshuffle.json()
 
 
-my_card = Deck()
-print(my_card.get_card())
+
+
+
+
 
