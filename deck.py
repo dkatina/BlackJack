@@ -1,4 +1,5 @@
 
+from webbrowser import get
 import requests
 
 class Deck():
@@ -15,7 +16,7 @@ class Deck():
         revised_card = {
             'value': card['cards'][0]['value'],
             'suit': card['cards'][0]['suit'],
-            'image': card['cards'][0]['images']['svg']
+            'image': f"{card['cards'][0]['code']}"
         }
         if revised_card['value'].isdigit():
             revised_card['points'] = int(revised_card['value'])
@@ -38,9 +39,9 @@ class Deck():
 
 
 
+my_card = Deck()
 
 
 
-
-
+print(my_card.get_card())
 

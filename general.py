@@ -5,10 +5,6 @@ from pyfiglet import Figlet
 import ascii_magic
 import os
 
-#If Hand > 21 and ace in hand ace = 1
-
-
-
 
 class Player():
     
@@ -75,9 +71,14 @@ class Player():
         print("\nHand:")
         print("------------------")
         for card in self.hand:
-            print(card['value'], 'of', card['suit'])
-            # card_pic = ascii_magic.from_url(card['image'])
-            # ascii_magic.to_terminal(card_pic)
+            # print(card['value'], 'of', card['suit'])
+            
+            card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 10)
+            ascii_magic.to_terminal(card_pic)
+
+
+
+
         print("\nHand Value: ", self.hand_v)
 
     def hit(self, card_dictionary):
@@ -109,8 +110,7 @@ class Player():
 
 
 class Dealer():
-    def __init__(self, name):
-        self.name = ''
+    def __init__(self):
         self.hand = []
         self.hidden_value = 0
         self.true_value = 0
@@ -157,7 +157,11 @@ class Dealer():
 
 
     def true_display(self):
-        print("Dealer's Hand:")
+        print(f"""
+        ~~~~~~~~~~~~~~~~~~~~~
+            Dealer's Hand:
+        ~~~~~~~~~~~~~~~~~~~~~
+        """)
         for card in self.hand:
             print(card['value'], 'of', card['suit'])
         print("Hand Value: ", self.true_value)
@@ -167,12 +171,10 @@ class Dealer():
         self.true_value = 0
         self.hand = []
         
-       
-
+    
 
 class Table():
     game_deck = Deck()
-
     while game_deck.cards_left < 52:
         game_deck.shuffle()
 
@@ -209,9 +211,8 @@ class Table():
         if game_deck.cards_left < 52:
             game_deck.shuffle()   
         #Welcome
-        the_dealer = input("Who will be the dealer?: ")
-        the_player = input("Who will be player1?: ")
-        self.dealer = Dealer(the_dealer)
+        the_player = input("Whats your name player?: ")
+        self.dealer = Dealer()
         self.player1 = Player(the_player)
 
         bal = int(input(f"How much will you be playing with {self.player1.name}?: "))
@@ -290,34 +291,6 @@ class Table():
 
 
                 
-
-          
-                
-
-            #Else Dealer's turn
-                #Dealer displays all cards
-                #Set up another while loop
-                #While dealers_true_hand_value is =< 17
-                    #Dealer_hits
-                    #Display_all
-
-                #Evaluate if dealer busted
-                    # If dealer busted Player wins
-                
-                #Else:
-                    #If player hand value > Dealer hand value:
-                        #Player wins
-                    #Elif player hand value == dealer hand value:
-                        #Draw, player gets bet back
-                    #Else:
-                        #PLayer loses
-
-            #Player will be asked to play again
-            #If yes loop continues
-            #Else:
-                #Show player how much they won or lost
-                #Break loop
-   
 
 
 
