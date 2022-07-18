@@ -13,13 +13,12 @@ from deck import Deck
 #*--> Time/Sleep imported for game timing to similate real game play
 from time import sleep
 #*--> Pyfiglet imported  ASCII text and renders it in ASCII art fonts
-from pyfiglet import Figlet
+from pyfiglet import figlet_format
 #*--> Python package that converts images into ASCII art for terminals
 import ascii_magic
 #*--> OS for clear screen functions across platforms
 import os
-import colorizer
-
+import color21
 
 # ~~~~~~ PROGRAM EXECUTION ~~~~~~~~~
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,7 +41,7 @@ class Player():
         betting = True
         while betting:
             if self.bal > 0:
-                bet = input(f'{self.name} you have ${self.bal}. How much would you like to bet? ')
+                bet = input(f'\n\n\n{self.name} you have ${self.bal}. How much would you like to bet? ')
                 if not bet.isdigit():
                     colorizer.print_red("Invalid entry please try again.")
                     print()
@@ -74,21 +73,23 @@ class Player():
 
 #*--> DISPLAY WAGER LOSS AMT ~~~~~~~~~~
     def lose_hand(self):
-        print(f'You lost $', self.bet_amount)
+        print(f'\n\nYou lost $', self.bet_amount)
         self.bet_amount = 0
 
 #*--> ADJUSTS PLAYERS BALANCE DUE TO TIE HAND ~~~~~~~~~~         
     def draw(self):
+        print(f'\n\nYou got your Bet back')
         self.bal += (self.bet_amount)
         self.bet_amount = 0
 
 #*--> ADJUSTS PLAYER BALANCE = PLAYER WAGER+DEALER WAGER ~~~~~~~~~~
     def win_hand(self):
+        print(f'\n\nYou Won $', self.bet_amount)
         self.bal += (self.bet_amount *2)
         
 #*--> DISPLAYS NAME, CARDS, & STATS OF PLAYER ~~~~~~~~~~        
     def display(self):
-        print(f"""
+        color21.print_blue(f"""
         ~~~~~~~~~~~~~~~~~~~~~
               {self.name}
         ~~~~~~~~~~~~~~~~~~~~~
@@ -98,15 +99,10 @@ class Player():
         print("\nHand:")
         print("------------------\n\n")
         for card in self.hand:
-            print(f"{card['value'].title()} of", end = "", sep='')
-            if card['suit'] == 'DIAMONDS':
-                colorizer.print_diamonds()
-            elif card['suit'] == 'HEARTS':
-                colorizer.print_hearts()
-            elif card['suit'] == 'CLUBS':
-                colorizer.print_clubs()
+            if card['suit'] == 'DIAMONDS' or card['suit'] == 'HEARTS':
+                color21.print_red_cards(card['value'], card['suit'])
             else:
-                colorizer.print_spades()
+                color21.print_black_cards(card['value'], card['suit'])
 
             # card_pic = ascii_magic.from_image_file(f"images/{card['image']}.png", columns = 15)
             # ace = ascii_magic.to_terminal(card_pic)
@@ -121,6 +117,19 @@ class Player():
 
         if card_dictionary['value'] == 'ACE':
             self.aces.append('ace')
+
+    def show_draw(self):
+        os.system('cls' if os.name == 'nt' else '')
+        color21.print_blue(f"\n\n\n  You Drew the {self.hand[-1]['value'].title()} of {self.hand[-1]['suit'].title()}")
+        card_pic = ascii_magic.from_image_file(f"images/{self.hand[-1]['image']}.png", columns = 30)
+        ascii_magic.to_terminal(card_pic)
+        sleep(2)
+
+    def blackjack(self):
+        if self.hand == 21:
+            return True
+        else:
+            return False
 
         
 #*--> "BUST" ACTIONS WHEN 21 IS EXCEEDED ~~~~~~~~~~~
@@ -160,19 +169,41 @@ class Dealer():
         self.true_value += card_dictionary['points']
         if card_dictionary['value'] == 'ACE':
             self.aces.append('ace')
+
+    def show_draw(self):
+        os.system('cls' if os.name == 'nt' else '')
+        if len(self.hand) == 2:
+            color21.print_red(f"\n\n Dealer Drew an Unknown Card")
+            card_pic = ascii_magic.from_image_file(f"images/BACK.PNG", columns = 30)
+            ascii_magic.to_terminal(card_pic)
+        else:
+            color21.print_red(f"\n\n Dealer Drew the {self.hand[-1]['value'].title()} of {self.hand[-1]['suit'].title()}")
+            card_pic = ascii_magic.from_image_file(f"images/{self.hand[-1]['image']}.png", columns = 30)
+            ascii_magic.to_terminal(card_pic)
+        sleep(2)
+
+    def dealer_had(self):
+        os.system('cls' if os.name == 'nt' else '')
+        color21.print_red(f"\n\n Dealer had the {self.hand[1]['value'].title()} of {self.hand[1]['suit'].title()}")
+        card_pic = ascii_magic.from_image_file(f"images/{self.hand[1]['image']}.png", columns = 30)
+        ascii_magic.to_terminal(card_pic)
+        sleep(2)
         
 #*--> DISPLAYS NAME, CARDS, & STATS OF DEALER ~~~~~~~~~~
     def dealer_display(self):
-        print(f"""
+        color21.print_red(f"""
         ~~~~~~~~~~~~~~~~~~~~~
             Dealer's Hand:
         ~~~~~~~~~~~~~~~~~~~~~
         """)
         for i in range(len(self.hand)):
             if i == 1:
-                print("Unknown", end = '   ')
+                color21.print_unkown()
             else:
-                print(f"{self.hand[i]['value']} of {self.hand[i]['suit']}", end = '   ')
+                if self.hand[i]['suit'] == 'DIAMONDS' or self.hand[i]['suit'] == 'HEARTS':
+                    color21.print_red_cards(self.hand[i]['value'], self.hand[i]['suit'])
+                else:
+                    color21.print_black_cards(self.hand[i]['value'], self.hand[i]['suit'])
         print("\n\n")
         print("Shown Hand Value: ", self.hidden_value)
 
@@ -193,13 +224,16 @@ class Dealer():
 
 #*--> AFTER PLAYER CHOOSES "STAY" DEALER HOLE CARD IS REVEALED ~~
     def true_display(self):
-        print(f"""
+        color21.print_red(f"""
         ~~~~~~~~~~~~~~~~~~~~~
             Dealer's Hand:
         ~~~~~~~~~~~~~~~~~~~~~
         """)
         for card in self.hand:
-            print(f"{card['value']} of {card['suit']}", end = '   ' )
+            if card['suit'] == 'DIAMONDS' or card['suit'] == 'HEARTS':
+                color21.print_red_cards(card['value'], card['suit'])
+            else:
+                color21.print_black_cards(card['value'], card['suit'])
         print("\n\n")
         print("Hand Value: ", self.true_value)
 
@@ -221,9 +255,14 @@ class Table():
         self.dealer = None
         self.player1 = None
         self.pot = 0
+
     
     def welcome(self):
-        pass
+        blackjack = ascii_magic.from_image_file(f"images/blackjack.png", columns = 100)
+        ascii_magic.to_terminal(blackjack)
+        color21.input_green("\t\t\t\t--Welcome Press ENTER to Play--")
+        os.system('cls' if os.name == 'nt' else '')
+
 
 #*--> FIRST CARD DISPLAY WITH DEALER HOLE CARD VALUE HIDDEN ~~~~~~~~~
     def display_all_hidden(self):
@@ -253,12 +292,12 @@ class Table():
 
         if game_deck.cards_left < 52:
             game_deck.shuffle()   
-        #Welcome
-        the_player = input("Whats your name player?: ")
+        self.welcome()
+        the_player = input("\n\nWhats your name player?: ")
         self.dealer = Dealer()
         self.player1 = Player(the_player)
 
-        bal = int(input(f"How much will you be playing with {self.player1.name}?: "))
+        bal = int(input(f"\n\nHow much will you be playing with {self.player1.name}?: "))
         self.player1.bal = bal 
 
         
@@ -268,16 +307,24 @@ class Table():
                 break
             else:
                 os.system('cls' if os.name == 'nt' else '')
-                print("\n\n\n\n\n\n\t\t\tInitial draw!")
+                print('\n\n\n')
+                announce = figlet_format("Initial", font = "alligator2")
+                announce2 = figlet_format("           Draw", font = "alligator2")
+                print(announce)
+                print(announce2)
                 sleep(2)
                 self.player1.hit(game_deck.get_card())
-                self.display_all_hidden()
+                self.player1.show_draw()
+                # self.display_all_hidden()
                 self.dealer.hit(game_deck.get_card())
-                self.display_all_hidden()
+                self.dealer.show_draw()
+                # self.display_all_hidden()
                 self.player1.hit(game_deck.get_card())
+                self.player1.show_draw()
                 self.player1.bust()
-                self.display_all_hidden()
+                # self.display_all_hidden()
                 self.dealer.hit(game_deck.get_card())
+                self.dealer.show_draw()
                 self.dealer.bust()
                 self.display_all_hidden()
             
@@ -290,25 +337,35 @@ class Table():
                     self.display_all_hidden()
                 else:
                     self.player1.hit(game_deck.get_card())
+                    self.player1.show_draw()
                     self.player1.bust()
                     self.display_all_hidden()
-                    if self.player1.bust():
-                        print("BUST!")
-                        print("You Lose......bitch")
+                    if self.player1.blackjack():
+                        print(figlet_format("BLACKJACK", font="alligator2"))
+                        print('\n\n\t\tThe Dealer still has a chance to match')
+                        hitting = False
+                    elif self.player1.bust():
+                        os.system('cls' if os.name == 'nt' else '')
+                        color21.print_red(figlet_format("You Busted", font = 'basic'))
+                        color21.print_red(figlet_format("           Loser", font = 'basic'))
                         self.player1.lose_hand()
                         hitting = False
                         player_busts = True
                     
 
             if not player_busts:
+                self.dealer.dealer_had()
                 self.display_all_true()
                 while self.dealer.true_value < 17:
                     self.dealer.hit(game_deck.get_card())
+                    self.dealer.show_draw()
                     self.dealer.bust()
                     self.display_all_true()
                 
             if self.dealer.bust():
-                print("Dealer Busted!\n You Win!")
+                os.system('cls' if os.name == 'nt' else '')
+                color21.print_yellow(figlet_format("Dealer Busted", font = 'alligator2'))
+                color21.print_yellow(figlet_format("You Win", font = 'alligator2'))
                 self.player1.win_hand()
             
             elif not player_busts:
@@ -328,7 +385,7 @@ class Table():
 #*-->  WIN OR LOSE THE PLAYER IS GIVEN OPTION TO PLAY AGAIN OR NOT ~~~~~~~~~
             self.dealer.clear_hand()
             self.player1.clear_hand()
-            again = input("Would you like to play again: (Y/N) ").lower()
+            again = input("\n\nWould you like to play again: (Y/N) ").lower()
             os.system('cls' if os.name == 'nt' else '')
             if not again == 'y':
                 playing = False

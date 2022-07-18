@@ -1,5 +1,5 @@
 import os
-from colorama import Fore, Style, init
+from colorama import Fore, Style, Back, init
 
 #init for colorama to fixed windows wierdness
 init()
@@ -46,3 +46,15 @@ def input_blue(s):
     print(Style.RESET_ALL)
     return response
 
+
+def print_red_cards(value, suit):
+    print(Fore.RED, Back.WHITE, Style.DIM, f'{value.title()} of {suit.title()}', Style.RESET_ALL, end='   ')
+
+def print_black_cards(value, suit):
+    print(Fore.BLACK, Back.WHITE, Style.DIM,f'{value.title()} of {suit.title()}', Style.RESET_ALL, end='   ')
+
+def print_unkown():
+    print(Fore.RED, Back.WHITE, Style.DIM, ' Unknown  ', Style.RESET_ALL, end='   ')
+
+   
+    
