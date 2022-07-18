@@ -43,7 +43,7 @@ class Player():
             if self.bal > 0:
                 bet = input(f'\n\n\n{self.name} you have ${self.bal}. How much would you like to bet? ')
                 if not bet.isdigit():
-                    colorizer.print_red("Invalid entry please try again.")
+                    color21.print_red("Invalid entry please try again.")
                     print()
                 else:
                     bet = int(bet)
@@ -123,7 +123,7 @@ class Player():
         color21.print_blue(f"\n\n\n  You Drew the {self.hand[-1]['value'].title()} of {self.hand[-1]['suit'].title()}")
         card_pic = ascii_magic.from_image_file(f"images/{self.hand[-1]['image']}.png", columns = 30)
         ascii_magic.to_terminal(card_pic)
-        sleep(2)
+        sleep(1.5)
 
     def blackjack(self):
         if self.hand == 21:
@@ -180,14 +180,14 @@ class Dealer():
             color21.print_red(f"\n\n Dealer Drew the {self.hand[-1]['value'].title()} of {self.hand[-1]['suit'].title()}")
             card_pic = ascii_magic.from_image_file(f"images/{self.hand[-1]['image']}.png", columns = 30)
             ascii_magic.to_terminal(card_pic)
-        sleep(2)
+        sleep(1.5)
 
     def dealer_had(self):
         os.system('cls' if os.name == 'nt' else '')
         color21.print_red(f"\n\n Dealer had the {self.hand[1]['value'].title()} of {self.hand[1]['suit'].title()}")
         card_pic = ascii_magic.from_image_file(f"images/{self.hand[1]['image']}.png", columns = 30)
         ascii_magic.to_terminal(card_pic)
-        sleep(2)
+        sleep(1.5)
         
 #*--> DISPLAYS NAME, CARDS, & STATS OF DEALER ~~~~~~~~~~
     def dealer_display(self):
@@ -260,7 +260,8 @@ class Table():
     def welcome(self):
         blackjack = ascii_magic.from_image_file(f"images/blackjack.png", columns = 100)
         ascii_magic.to_terminal(blackjack)
-        color21.input_green("\t\t\t\t--Welcome Press ENTER to Play--")
+        color21.print_green("\t\t\t\tWlesome to J&D's 6 Deck BlackJack")
+        color21.input_green("\t\t\t\t     --Press ENTER to Play--")
         os.system('cls' if os.name == 'nt' else '')
 
 
@@ -297,8 +298,14 @@ class Table():
         self.dealer = Dealer()
         self.player1 = Player(the_player)
 
-        bal = int(input(f"\n\nHow much will you be playing with {self.player1.name}?: "))
-        self.player1.bal = bal 
+        while True:
+            bal = input(f"\n\nHow much will you be playing with {self.player1.name}?: ")
+            if not bal.isdigit():
+                    color21.print_red("\nInvalid entry please try again.")
+                    print()
+            else:
+                self.player1.bal = int(bal) 
+                break
 
         
         playing = True
