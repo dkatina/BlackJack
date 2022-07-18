@@ -371,21 +371,31 @@ class Table():
                 
             if self.dealer.bust():
                 os.system('cls' if os.name == 'nt' else '')
-                color21.print_yellow(figlet_format("Dealer Busted", font = 'alligator2'))
+                color21.print_yellow(figlet_format("Dealer", font = 'alligator2'))
+                color21.print_yellow(figlet_format("Busted", font = 'alligator2'))
                 color21.print_yellow(figlet_format("You Win", font = 'alligator2'))
                 self.player1.win_hand()
             
             elif not player_busts:
                 if self.player1.hand_v > self.dealer.true_value:
-                    print("You win!")
+                    my_hand = figlet_format(f"{self.player1.hand_v} > {self.dealer.true_value}", font = 'univers')
+                   
+                    color21.print_green(my_hand)
+                    print("\t\t\tYou win!")
                     self.player1.win_hand()
                     
                 elif self.player1.hand_v == self.dealer.true_value:
-                    print("It's a Draw!")
+                    my_hand = figlet_format(f"{self.player1.hand_v} = {self.dealer.true_value}", font = 'univers')
+                    
+                    color21.print_blue(my_hand)
+                    print("\t\t\tIt's a Draw!")
                     self.player1.draw()
                     
                 else:
-                    print("You lose!")
+                    my_hand = figlet_format(f"{self.player1.hand_v} < {self.dealer.true_value}", font = 'univers')
+        
+                    color21.print_red(my_hand)
+                    print("\t\t\tYou lose!")
                     self.player1.lose_hand()
                     
 
