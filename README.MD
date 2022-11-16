@@ -1,6 +1,12 @@
 # BLACK(21)JACK
 
 Week 3 Weekend project - Dylan K. & Jody S.
+
+Dylan K. - Dealer & Table Functions, Deck API, and Color Displays
+
+Jody S. - Whiteboard, Player & Betting Functions, Documentation
+
+Combined Efforts - Main Game Play Functions & Logic  
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install requirements.txt.
