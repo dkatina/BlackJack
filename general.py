@@ -126,12 +126,12 @@ class Player():
         sleep(1.5)
 
     def blackjack(self):
-        if self.hand == 21:
+        if self.hand_v == 21:
             return True
         else:
             return False
 
-        
+
 #*--> "BUST" ACTIONS WHEN 21 IS EXCEEDED ~~~~~~~~~~~
 #*--> VERIFY/ADJUST VALUE OF ACE TO 1 ~~~~~~~~~~~~~~~        
     def bust(self):

@@ -3,7 +3,7 @@ from webbrowser import get
 import requests
 
 class Deck():
-    url =  'https://www.deckofcardsapi.com/api/deck/z0m0j5le7c56/'
+    url =  'https://www.deckofcardsapi.com/api/deck/2tttz40fqdio/'
     deck_id = 'z0m0j5le7c56'
     response = requests.post(url)
     deck = response.json()
@@ -11,7 +11,7 @@ class Deck():
     cards = deck 
 
     def get_card(self):
-        card_draw = requests.get('https://www.deckofcardsapi.com/api/deck/z0m0j5le7c56/draw/?count=1')
+        card_draw = requests.get('https://www.deckofcardsapi.com/api/deck/2tttz40fqdio/draw/?count=1')
         card = card_draw.json()
         revised_card = {
             'value': card['cards'][0]['value'],
@@ -28,7 +28,7 @@ class Deck():
 
     
     def shuffle(self):
-        data = 'https://www.deckofcardsapi.com/api/deck/z0m0j5le7c56/shuffle/'
+        data = 'https://www.deckofcardsapi.com/api/deck/2tttz40fqdio/shuffle/'
         reshuffle = requests.post(data)
         return reshuffle.json()
 
